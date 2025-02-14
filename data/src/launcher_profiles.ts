@@ -188,7 +188,9 @@ function generateLauncherProfiles() {
             version.replaceAll(".", "_"),
             {
                 created,
-                icon: "Furnace",
+                icon: "Hardened_Clay",
+                javaArgs:
+                    "-Xmx512M -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M",
                 lastUsed: created,
                 lastVersionId: version,
                 name: `${version} (${pvn})`,

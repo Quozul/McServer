@@ -59,6 +59,16 @@ pub fn get_grouped_registries(
     grouped
 }
 
+pub fn get_overworld_codec(protocol_version: ProtocolVersion) -> Nbt {
+    let data_dir = std::env::var("DATA_DIR").unwrap_or_else(|_| "./data/generated".to_string());
+    let overworld_path = PathBuf::from(data_dir)
+        .join(protocol_version.to_string())
+        .join("data/minecraft/dimension_type/overworld.json");
+    get_json_files(&overworld_path)
+        .map(|json| Nbt::from_json(&json, None).to_nameless_compound())
+        .unwrap_or(Nbt::End)
+}
+
 pub fn get_registry_codec(protocol_version: ProtocolVersion) -> Nbt {
     let grouped = get_grouped_registries(protocol_version.clone());
     Nbt::Compound {

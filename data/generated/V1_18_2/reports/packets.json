@@ -21,19 +21,19 @@
   "play": {
     "clientbound": {
       "minecraft:keep_alive": {
-        "protocol_id": 31
+        "protocol_id": 33
       },
       "minecraft:level_chunk_with_light": {
-        "protocol_id": 37
+        "protocol_id": 34
       },
       "minecraft:login": {
-        "protocol_id": 36
+        "protocol_id": 38
       },
       "minecraft:player_position": {
         "protocol_id": 56
       },
       "minecraft:set_default_spawn_position": {
-        "protocol_id": 76
+        "protocol_id": 75
       }
     },
     "serverbound": {

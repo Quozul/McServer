@@ -1,5 +1,6 @@
 use minecraft_protocol::prelude::*;
 
+/// This packet is called "Join Game" prior to 1.19 on wiki.vg
 #[derive(PacketOut)]
 #[packet_id("play/clientbound/minecraft:login")]
 pub struct LoginPacket {
@@ -13,10 +14,13 @@ pub struct LoginPacket {
     /// Size of the following array.
     /// Identifiers for all dimensions on the server.
     pub dimension_names: LengthPaddedVec<Identifier>,
+    /// Registry codec is called dimension codec prior to 1.19
     #[pvn(..764)]
     pub registry_codec: Nbt,
-    #[pvn(..764)]
-    pub dimension_type: Identifier,
+    #[pvn(759..764)]
+    pub v1_19_dimension_type: Identifier,
+    #[pvn(..759)]
+    pub dimension: Nbt,
     /// Name of the dimension being spawned into.
     #[pvn(..764)]
     pub dimension_name: Identifier,
@@ -59,10 +63,13 @@ pub struct LoginPacket {
     /// True if the world is a superflat world; flat worlds have different void fog and a horizon at y=0 instead of y=63.
     pub is_flat: bool,
     /// If true, then the next two fields are present.
+    #[pvn(759..)]
     pub has_death_location: bool,
     /// Name of the dimension the player died in.
+    #[pvn(759..)]
     pub death_dimension_name: Option<Identifier>,
     /// The location that the player died at.
+    #[pvn(759..)]
     pub death_location: Option<Position>,
     /// The number of ticks until the player can use the portal again.
     #[pvn(763..)]
@@ -82,7 +89,7 @@ impl Default for LoginPacket {
             game_mode: 3,
             previous_game_mode: -1,
             dimension_names: Vec::new().into(),
-            registry_codec: Nbt::End,
+            registry_codec: Nbt::End, // This must be defined by the caller
             max_players: VarInt::new(1),
             view_distance: VarInt::new(10),
             simulation_distance: VarInt::new(10),
@@ -90,7 +97,8 @@ impl Default for LoginPacket {
             enable_respawn_screen: true,
             v_1_20_2_do_limited_crafting: false,
             v_1_20_5_dimension_type: VarInt::new(0),
-            dimension_type: overworld.clone(),
+            v1_19_dimension_type: overworld.clone(),
+            dimension: Nbt::End, // This must be defined by the caller
             dimension_name: overworld.clone(),
             hashed_seed: 0,
             v_1_20_2_game_mode: 3,

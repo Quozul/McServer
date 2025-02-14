@@ -12,7 +12,7 @@ use minecraft_packets::play::login_packet::LoginPacket;
 use minecraft_packets::play::set_default_spawn_position::SetDefaultSpawnPosition;
 use minecraft_packets::play::synchronize_player_position_packet::SynchronizePlayerPositionPacket;
 use minecraft_protocol::data::registry::get_all_registries::{
-    get_grouped_registries, get_registry_codec,
+    get_grouped_registries, get_overworld_codec, get_registry_codec,
 };
 use minecraft_protocol::protocol_version::ProtocolVersion;
 use minecraft_protocol::state::State;
@@ -63,9 +63,12 @@ pub async fn on_acknowledge_configuration(
 /// Switch to the Play state and send required packets to spawn the player in the world
 pub async fn send_play_packets(mut client: MutexGuard<'_, Client>) {
     client.update_state(State::Play);
+    let registry_codec = get_registry_codec(client.protocol_version());
+    let dimension = get_overworld_codec(client.protocol_version());
 
     let packet = LoginPacket {
-        registry_codec: get_registry_codec(client.protocol_version()),
+        registry_codec,
+        dimension,
         ..Default::default()
     };
     client.send_packet(packet).await;
